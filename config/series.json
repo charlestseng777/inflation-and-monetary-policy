@@ -1,0 +1,49 @@
+{
+  "start": "2015-01",
+  "ons": {
+    "base": "https://www.ons.gov.uk",
+    "datasets": {
+      "mm23": "/economy/inflationandpriceindices/timeseries/{cdid}/mm23/data",
+      "lms": "/employmentandlabourmarket/peopleinwork/earningsandworkinghours/timeseries/{cdid}/lms/data"
+    }
+  },
+  "boe": {
+    "url": "https://www.bankofengland.co.uk/boeapps/iadb/fromshowcolumns.asp",
+    "series": "IUDBEDR",
+    "label": "Official Bank Rate (daily)"
+  },
+  "rates": {
+    "headline_cpi":   { "cdid": "D7G7", "dataset": "mm23", "kind": "rate",  "title": "CPI annual rate, all items" },
+    "services_cpi":   { "cdid": "D7NN", "dataset": "mm23", "kind": "rate",  "title": "CPI annual rate, services" },
+    "goods_cpi":      { "cdid": "D7NM", "dataset": "mm23", "kind": "rate",  "title": "CPI annual rate, goods" },
+    "food_cpi":       { "cdid": "D7G8", "dataset": "mm23", "kind": "rate",  "title": "CPI annual rate, food & non-alcoholic beverages" },
+    "alcohol_tobacco_cpi": { "cdid": "D7G9", "dataset": "mm23", "kind": "rate", "title": "CPI annual rate, alcohol & tobacco" },
+
+    "core_cpi":       { "cdid": "DKC6", "dataset": "mm23", "kind": "yoy_from_index", "title": "CPI excl. energy, food, alcohol & tobacco" },
+    "core_goods_cpi": { "cdid": "DK9J", "dataset": "mm23", "kind": "yoy_from_index", "title": "CPI non-energy industrial goods" },
+    "energy_cpi":     { "cdid": "DK9T", "dataset": "mm23", "kind": "yoy_from_index", "title": "CPI energy" },
+
+    "wage_growth":    { "cdid": "KAI9", "dataset": "lms",  "kind": "rate",  "title": "AWE regular pay, 3m YoY growth, whole economy, SA" }
+  },
+  "indices": {
+    "headline_index":        { "cdid": "D7BT", "dataset": "mm23", "title": "CPI index, all items (2015=100)" },
+    "core_index":            { "cdid": "DKC6", "dataset": "mm23", "title": "CPI index, core" },
+    "services_index":        { "cdid": "D7F5", "dataset": "mm23", "title": "CPI index, services" },
+    "core_goods_index":      { "cdid": "DK9J", "dataset": "mm23", "title": "CPI index, non-energy industrial goods" },
+    "energy_index":          { "cdid": "DK9T", "dataset": "mm23", "title": "CPI index, energy" },
+    "food_index":            { "cdid": "D7BU", "dataset": "mm23", "title": "CPI index, food & non-alcoholic beverages" },
+    "alcohol_tobacco_index": { "cdid": "D7BV", "dataset": "mm23", "title": "CPI index, alcohol & tobacco" }
+  },
+  "weights": {
+    "food":            { "cdids": ["CHZR"], "dataset": "mm23", "title": "CPI weight, division 01 food & non-alcoholic beverages" },
+    "alcohol_tobacco": { "cdids": ["CHZS"], "dataset": "mm23", "title": "CPI weight, division 02 alcohol & tobacco" },
+    "energy":          { "cdids": ["CJVF", "CJXR"], "dataset": "mm23", "title": "CPI weight, 04.5 electricity/gas/other fuels + 07.2.2 fuels & lubricants" }
+  },
+  "weight_fallbacks": {
+    "services": 470,
+    "core_goods": 310,
+    "food": 110,
+    "energy": 70,
+    "alcohol_tobacco": 40
+  }
+}

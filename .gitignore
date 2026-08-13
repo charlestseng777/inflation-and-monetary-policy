@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.local
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Copied from /data at build time by web/scripts/sync-data.mjs
+web/public/data/
+
+# Machine-local tool settings
+.claude/settings.local.json

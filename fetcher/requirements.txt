@@ -1,0 +1,3 @@
+# Only needed for the Claude commentary step.
+# The ONS/BoE fetch and all derivations use the standard library.
+anthropic>=0.60

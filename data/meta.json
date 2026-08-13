@@ -1,0 +1,355 @@
+{
+  "generated_at": "2026-08-13T04:19:31+00:00",
+  "latest_month": "2026-06",
+  "latest": {
+    "headline_cpi": 2.6,
+    "core_cpi": 2.58,
+    "services_cpi": 3.6,
+    "policy_rate": 3.75,
+    "real_rate": 1.15,
+    "wage_growth": null
+  },
+  "mom": {
+    "headline_cpi": -0.2,
+    "core_cpi": -0.01,
+    "services_cpi": -0.1,
+    "core_goods_cpi": 0.08,
+    "food_cpi": -0.5,
+    "energy_cpi": -1.74,
+    "alcohol_tobacco_cpi": -0.3,
+    "wage_growth": null,
+    "policy_rate": 0.0
+  },
+  "rate_changes": [
+    {
+      "date": "2016-08-04",
+      "month": "2016-08",
+      "from": 0.5,
+      "to": 0.25,
+      "change": -0.25
+    },
+    {
+      "date": "2017-11-02",
+      "month": "2017-11",
+      "from": 0.25,
+      "to": 0.5,
+      "change": 0.25
+    },
+    {
+      "date": "2018-08-02",
+      "month": "2018-08",
+      "from": 0.5,
+      "to": 0.75,
+      "change": 0.25
+    },
+    {
+      "date": "2020-03-11",
+      "month": "2020-03",
+      "from": 0.75,
+      "to": 0.25,
+      "change": -0.5
+    },
+    {
+      "date": "2020-03-19",
+      "month": "2020-03",
+      "from": 0.25,
+      "to": 0.1,
+      "change": -0.15
+    },
+    {
+      "date": "2021-12-16",
+      "month": "2021-12",
+      "from": 0.1,
+      "to": 0.25,
+      "change": 0.15
+    },
+    {
+      "date": "2022-02-03",
+      "month": "2022-02",
+      "from": 0.25,
+      "to": 0.5,
+      "change": 0.25
+    },
+    {
+      "date": "2022-03-17",
+      "month": "2022-03",
+      "from": 0.5,
+      "to": 0.75,
+      "change": 0.25
+    },
+    {
+      "date": "2022-05-05",
+      "month": "2022-05",
+      "from": 0.75,
+      "to": 1.0,
+      "change": 0.25
+    },
+    {
+      "date": "2022-06-16",
+      "month": "2022-06",
+      "from": 1.0,
+      "to": 1.25,
+      "change": 0.25
+    },
+    {
+      "date": "2022-08-04",
+      "month": "2022-08",
+      "from": 1.25,
+      "to": 1.75,
+      "change": 0.5
+    },
+    {
+      "date": "2022-09-22",
+      "month": "2022-09",
+      "from": 1.75,
+      "to": 2.25,
+      "change": 0.5
+    },
+    {
+      "date": "2022-11-03",
+      "month": "2022-11",
+      "from": 2.25,
+      "to": 3.0,
+      "change": 0.75
+    },
+    {
+      "date": "2022-12-15",
+      "month": "2022-12",
+      "from": 3.0,
+      "to": 3.5,
+      "change": 0.5
+    },
+    {
+      "date": "2023-02-02",
+      "month": "2023-02",
+      "from": 3.5,
+      "to": 4.0,
+      "change": 0.5
+    },
+    {
+      "date": "2023-03-23",
+      "month": "2023-03",
+      "from": 4.0,
+      "to": 4.25,
+      "change": 0.25
+    },
+    {
+      "date": "2023-05-11",
+      "month": "2023-05",
+      "from": 4.25,
+      "to": 4.5,
+      "change": 0.25
+    },
+    {
+      "date": "2023-06-22",
+      "month": "2023-06",
+      "from": 4.5,
+      "to": 5.0,
+      "change": 0.5
+    },
+    {
+      "date": "2023-08-03",
+      "month": "2023-08",
+      "from": 5.0,
+      "to": 5.25,
+      "change": 0.25
+    },
+    {
+      "date": "2024-08-01",
+      "month": "2024-08",
+      "from": 5.25,
+      "to": 5.0,
+      "change": -0.25
+    },
+    {
+      "date": "2024-11-07",
+      "month": "2024-11",
+      "from": 5.0,
+      "to": 4.75,
+      "change": -0.25
+    },
+    {
+      "date": "2025-02-06",
+      "month": "2025-02",
+      "from": 4.75,
+      "to": 4.5,
+      "change": -0.25
+    },
+    {
+      "date": "2025-05-08",
+      "month": "2025-05",
+      "from": 4.5,
+      "to": 4.25,
+      "change": -0.25
+    },
+    {
+      "date": "2025-08-07",
+      "month": "2025-08",
+      "from": 4.25,
+      "to": 4.0,
+      "change": -0.25
+    },
+    {
+      "date": "2025-12-18",
+      "month": "2025-12",
+      "from": 4.0,
+      "to": 3.75,
+      "change": -0.25
+    }
+  ],
+  "events": [
+    {
+      "id": "brexit-referendum",
+      "date": "2016-06",
+      "label": "Brexit referendum",
+      "category": "political",
+      "description": "The UK votes to leave the EU. Sterling falls roughly 10% on a trade-weighted basis over the following months, feeding through to import prices and pushing CPI from near zero to above 3% by late 2017."
+    },
+    {
+      "id": "covid-lockdown",
+      "date": "2020-03",
+      "label": "COVID-19 lockdown",
+      "category": "shock",
+      "description": "First national lockdown. Bank Rate is cut twice in nine days, from 0.75% to 0.10%. Demand collapses, energy prices fall and CPI drops close to zero — the disinflationary phase that precedes the 2021-22 surge."
+    },
+    {
+      "id": "vat-cut-hospitality",
+      "date": "2020-07",
+      "label": "Hospitality VAT cut to 5%",
+      "category": "fiscal",
+      "description": "VAT on hospitality and tourism cut from 20% to 5%. It mechanically depresses services CPI, and its staged reversal through 2021-22 mechanically flatters it — a reason to be careful reading services inflation across this window."
+    },
+    {
+      "id": "reopening",
+      "date": "2021-04",
+      "label": "Reopening & base effects",
+      "category": "shock",
+      "description": "Restrictions lift as the vaccine rollout advances. Base effects against the depressed 2020 price level, plus goods demand meeting constrained supply chains, start pulling headline CPI up from below 1%."
+    },
+    {
+      "id": "gas-price-surge",
+      "date": "2021-10",
+      "label": "European gas price surge",
+      "category": "shock",
+      "description": "Wholesale gas prices spike as post-COVID demand outstrips supply. The Ofgem cap passes this through with a lag, making energy the dominant contributor to headline inflation through 2022."
+    },
+    {
+      "id": "hiking-cycle-start",
+      "date": "2021-12",
+      "label": "BoE hiking cycle begins",
+      "category": "policy",
+      "description": "The MPC raises Bank Rate from 0.10% to 0.25% — the first hike of the cycle — despite Omicron uncertainty, citing tight labour markets and broadening price pressures.",
+      "spanEnd": "2023-08",
+      "spanLabel": "Hiking cycle"
+    },
+    {
+      "id": "ukraine-invasion",
+      "date": "2022-02",
+      "label": "Russia invades Ukraine",
+      "category": "shock",
+      "description": "Energy and food commodity prices spike. For an energy-importing economy this is a terms-of-trade shock: it raises inflation and lowers real incomes simultaneously, which is why the MPC framed it as something to look through only insofar as it did not become persistent."
+    },
+    {
+      "id": "price-cap-apr-2022",
+      "date": "2022-04",
+      "label": "Ofgem cap +54%",
+      "category": "shock",
+      "description": "The domestic energy price cap rises 54% in a single step. Energy alone contributes roughly 2 percentage points to headline CPI over the following months."
+    },
+    {
+      "id": "mini-budget",
+      "date": "2022-09",
+      "label": "Mini-Budget",
+      "category": "fiscal",
+      "description": "Unfunded tax cuts announced without an OBR forecast trigger a gilt sell-off and a sharp fall in sterling. The Bank intervenes in the long-dated gilt market for financial-stability reasons, and market pricing for the terminal Bank Rate briefly moves above 6%."
+    },
+    {
+      "id": "energy-price-guarantee",
+      "date": "2022-10",
+      "label": "Energy Price Guarantee",
+      "category": "fiscal",
+      "description": "The EPG caps typical household energy bills, holding energy CPI well below where the Ofgem cap alone would have taken it. It lowers measured headline inflation while supporting demand — an explicit complication for the MPC's reaction function."
+    },
+    {
+      "id": "peak-cpi",
+      "date": "2022-10",
+      "label": "Headline CPI peaks",
+      "category": "milestone",
+      "description": "Headline CPI peaks at 11.1%, a 41-year high. Core and services inflation peak later and fall more slowly — the standard signature of an external shock giving way to domestically generated inflation."
+    },
+    {
+      "id": "terminal-rate",
+      "date": "2023-08",
+      "label": "Bank Rate peaks at 5.25%",
+      "category": "policy",
+      "description": "The MPC delivers its final hike of the cycle, taking Bank Rate to 5.25%. Headline inflation is falling fast on energy base effects, but services inflation near 7% keeps policy restrictive.",
+      "spanEnd": "2024-08",
+      "spanLabel": "On hold at 5.25%"
+    },
+    {
+      "id": "target-hit",
+      "date": "2024-05",
+      "label": "CPI returns to 2% target",
+      "category": "milestone",
+      "description": "Headline CPI hits the 2% target for the first time since 2021, driven almost entirely by energy base effects. Services inflation remains close to 6%, which is why the MPC did not cut at this meeting."
+    },
+    {
+      "id": "first-cut",
+      "date": "2024-08",
+      "label": "First cut of the easing cycle",
+      "category": "policy",
+      "description": "The MPC cuts Bank Rate to 5.00% on a 5-4 vote, describing the move as a removal of some restrictiveness rather than the start of a rapid easing cycle.",
+      "spanEnd": null,
+      "spanLabel": "Easing cycle"
+    },
+    {
+      "id": "nic-increase",
+      "date": "2025-04",
+      "label": "Employer NICs rise",
+      "category": "fiscal",
+      "description": "The increase in employer National Insurance contributions and the National Living Wage raises labour costs for services-intensive sectors, a channel the MPC watched closely for pass-through into services prices."
+    }
+  ],
+  "reaction_function_flag": null,
+  "diff": {
+    "added_months": [],
+    "revised_values": [],
+    "has_changes": false
+  },
+  "sources": [
+    {
+      "name": "Office for National Statistics",
+      "dataset": "MM23 Consumer price inflation time series",
+      "url": "https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/consumerpriceindices",
+      "series": [
+        "D7BT",
+        "D7BU",
+        "D7BV",
+        "D7F5",
+        "D7G7",
+        "D7G8",
+        "D7G9",
+        "D7NM",
+        "D7NN",
+        "DK9J",
+        "DK9T",
+        "DKC6",
+        "KAI9"
+      ]
+    },
+    {
+      "name": "Bank of England",
+      "dataset": "Interactive Statistical Database",
+      "url": "https://www.bankofengland.co.uk/boeapps/database/",
+      "series": [
+        "IUDBEDR"
+      ]
+    }
+  ],
+  "methodology": {
+    "contributions": "Contribution of each component to the headline annual rate is its CPI basket weight divided by 1000, multiplied by its annual rate. The 'other' component is the residual between headline CPI and the sum of the five modelled components.",
+    "services_weight": "The services weight is implied each month from the identity headline = (w_s * services + w_g * goods) / 1000 with w_s + w_g = 1000, falling back to the published basket approximation when goods and services inflation are within 0.5pp of each other.",
+    "core": "Core CPI is the ONS 'excluding energy, food, alcohol and tobacco' index (DKC6), converted to an annual rate. Core goods is the non-energy industrial goods index (DK9J); energy is DK9T.",
+    "policy_rate": "Bank Rate is the Bank of England's daily official rate (IUDBEDR), taken at the last observation of each month so the series is a step function reflecting actual MPC decisions."
+  }
+}

@@ -1,0 +1,113 @@
+[
+  {
+    "id": "brexit-referendum",
+    "date": "2016-06",
+    "label": "Brexit referendum",
+    "category": "political",
+    "description": "The UK votes to leave the EU. Sterling falls roughly 10% on a trade-weighted basis over the following months, feeding through to import prices and pushing CPI from near zero to above 3% by late 2017."
+  },
+  {
+    "id": "covid-lockdown",
+    "date": "2020-03",
+    "label": "COVID-19 lockdown",
+    "category": "shock",
+    "description": "First national lockdown. Bank Rate is cut twice in nine days, from 0.75% to 0.10%. Demand collapses, energy prices fall and CPI drops close to zero — the disinflationary phase that precedes the 2021-22 surge."
+  },
+  {
+    "id": "vat-cut-hospitality",
+    "date": "2020-07",
+    "label": "Hospitality VAT cut to 5%",
+    "category": "fiscal",
+    "description": "VAT on hospitality and tourism cut from 20% to 5%. It mechanically depresses services CPI, and its staged reversal through 2021-22 mechanically flatters it — a reason to be careful reading services inflation across this window."
+  },
+  {
+    "id": "reopening",
+    "date": "2021-04",
+    "label": "Reopening & base effects",
+    "category": "shock",
+    "description": "Restrictions lift as the vaccine rollout advances. Base effects against the depressed 2020 price level, plus goods demand meeting constrained supply chains, start pulling headline CPI up from below 1%."
+  },
+  {
+    "id": "gas-price-surge",
+    "date": "2021-10",
+    "label": "European gas price surge",
+    "category": "shock",
+    "description": "Wholesale gas prices spike as post-COVID demand outstrips supply. The Ofgem cap passes this through with a lag, making energy the dominant contributor to headline inflation through 2022."
+  },
+  {
+    "id": "hiking-cycle-start",
+    "date": "2021-12",
+    "label": "BoE hiking cycle begins",
+    "category": "policy",
+    "description": "The MPC raises Bank Rate from 0.10% to 0.25% — the first hike of the cycle — despite Omicron uncertainty, citing tight labour markets and broadening price pressures.",
+    "spanEnd": "2023-08",
+    "spanLabel": "Hiking cycle"
+  },
+  {
+    "id": "ukraine-invasion",
+    "date": "2022-02",
+    "label": "Russia invades Ukraine",
+    "category": "shock",
+    "description": "Energy and food commodity prices spike. For an energy-importing economy this is a terms-of-trade shock: it raises inflation and lowers real incomes simultaneously, which is why the MPC framed it as something to look through only insofar as it did not become persistent."
+  },
+  {
+    "id": "price-cap-apr-2022",
+    "date": "2022-04",
+    "label": "Ofgem cap +54%",
+    "category": "shock",
+    "description": "The domestic energy price cap rises 54% in a single step. Energy alone contributes roughly 2 percentage points to headline CPI over the following months."
+  },
+  {
+    "id": "mini-budget",
+    "date": "2022-09",
+    "label": "Mini-Budget",
+    "category": "fiscal",
+    "description": "Unfunded tax cuts announced without an OBR forecast trigger a gilt sell-off and a sharp fall in sterling. The Bank intervenes in the long-dated gilt market for financial-stability reasons, and market pricing for the terminal Bank Rate briefly moves above 6%."
+  },
+  {
+    "id": "energy-price-guarantee",
+    "date": "2022-10",
+    "label": "Energy Price Guarantee",
+    "category": "fiscal",
+    "description": "The EPG caps typical household energy bills, holding energy CPI well below where the Ofgem cap alone would have taken it. It lowers measured headline inflation while supporting demand — an explicit complication for the MPC's reaction function."
+  },
+  {
+    "id": "peak-cpi",
+    "date": "2022-10",
+    "label": "Headline CPI peaks",
+    "category": "milestone",
+    "description": "Headline CPI peaks at 11.1%, a 41-year high. Core and services inflation peak later and fall more slowly — the standard signature of an external shock giving way to domestically generated inflation."
+  },
+  {
+    "id": "terminal-rate",
+    "date": "2023-08",
+    "label": "Bank Rate peaks at 5.25%",
+    "category": "policy",
+    "description": "The MPC delivers its final hike of the cycle, taking Bank Rate to 5.25%. Headline inflation is falling fast on energy base effects, but services inflation near 7% keeps policy restrictive.",
+    "spanEnd": "2024-08",
+    "spanLabel": "On hold at 5.25%"
+  },
+  {
+    "id": "target-hit",
+    "date": "2024-05",
+    "label": "CPI returns to 2% target",
+    "category": "milestone",
+    "description": "Headline CPI hits the 2% target for the first time since 2021, driven almost entirely by energy base effects. Services inflation remains close to 6%, which is why the MPC did not cut at this meeting."
+  },
+  {
+    "id": "first-cut",
+    "date": "2024-08",
+    "label": "First cut of the easing cycle",
+    "category": "policy",
+    "description": "The MPC cuts Bank Rate to 5.00% on a 5-4 vote, describing the move as a removal of some restrictiveness rather than the start of a rapid easing cycle.",
+    "spanEnd": null,
+    "spanLabel": "Easing cycle"
+  },
+  {
+    "id": "nic-increase",
+    "date": "2025-04",
+    "label": "Employer NICs rise",
+    "category": "fiscal",
+    "description": "The increase in employer National Insurance contributions and the National Living Wage raises labour costs for services-intensive sectors, a channel the MPC watched closely for pass-through into services prices."
+  }
+]

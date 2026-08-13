@@ -1,0 +1,56 @@
+name: Update data
+
+on:
+  schedule:
+    # ONS CPI lands at 07:00 UK on release days; MPC decisions at 12:00 UK.
+    # Two weekday runs catch both without hammering either source.
+    - cron: '30 6 * * 1-5'
+    - cron: '30 12 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Write output and regenerate commentary even if nothing changed'
+        type: boolean
+        default: false
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r fetcher/requirements.txt
+
+      - name: Fetch ONS + BoE data and write commentary
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+        run: |
+          python fetcher/fetch.py ${{ inputs.force && '--force' || '' }}
+
+      - name: Commit updated data
+        run: |
+          if [ -z "$(git status --porcelain data)" ]; then
+            echo "No data changes — nothing to commit."
+            exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+
+          LATEST=$(python -c "import json;print(json.load(open('data/meta.json'))['latest_month'])")
+          git commit -m "data: refresh through ${LATEST}"
+          git push
