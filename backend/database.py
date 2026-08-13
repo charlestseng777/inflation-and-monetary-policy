@@ -246,18 +246,23 @@ def load_rate_changes(conn) -> list[dict]:
 def load_events(conn) -> list[dict]:
     with conn.cursor() as cur:
         cur.execute("SELECT * FROM events ORDER BY sort_order ASC, month ASC")
-        return [
-            {
+        events = []
+        for row in cur.fetchall():
+            event = {
                 "id": row["id"],
                 "date": row["month"],
                 "label": row["label"],
                 "category": row["category"],
                 "description": row["description"],
-                "spanEnd": row["span_end"],
-                "spanLabel": row["span_label"],
             }
-            for row in cur.fetchall()
-        ]
+            # Only events that define a span carry the span keys at all. Adding
+            # them as nulls everywhere would still render correctly, but the
+            # payload would no longer be identical to the flat-file version.
+            if row["span_label"] is not None:
+                event["spanEnd"] = row["span_end"]
+                event["spanLabel"] = row["span_label"]
+            events.append(event)
+        return events
 
 
 def load_commentary(conn, limit: int = 60) -> list[dict]:
