@@ -2,10 +2,16 @@ name: Update data
 
 on:
   schedule:
-    # ONS CPI lands at 07:00 UK on release days; MPC decisions at 12:00 UK.
-    # Two weekday runs catch both without hammering either source.
-    - cron: '30 6 * * 1-5'
-    - cron: '30 12 * * 1-5'
+    # Cron is UTC; UK time is UTC in winter and UTC+1 in summer. Each slot below
+    # has to land AFTER the publication time in BOTH, so they are set against the
+    # later (winter) case.
+    #
+    #   ONS CPI, 07:00 UK  -> 06:00 UTC summer / 07:00 UTC winter
+    #   MPC decision, 12:00 UK -> 11:00 UTC summer / 12:00 UTC winter
+    #
+    - cron: '30 7 * * 1-5'   # 08:30 BST / 07:30 GMT — after the ONS release
+    - cron: '30 12 * * 1-5'  # 13:30 BST / 12:30 GMT — after the MPC announcement
+    - cron: '30 15 * * 1-5'  # safety net for late publication to the BoE database
   workflow_dispatch:
     inputs:
       force:
