@@ -26,9 +26,11 @@ for (const file of files) {
 }
 
 if (copied === 0) {
-  console.error('[sync-data] No data files found. Run the fetcher first:')
-  console.error('            python fetcher/fetch.py --no-llm')
-  process.exit(1)
+  // Not fatal: when VITE_API_BASE_URL is set the app reads from the API and
+  // never touches these files. Only a local build with no API needs them.
+  console.warn('[sync-data] No data files found in /data.')
+  console.warn('            Fine if VITE_API_BASE_URL points at the API service.')
+  console.warn('            Otherwise run: python fetcher/fetch.py --no-llm')
+} else {
+  console.log(`[sync-data] copied ${copied} file(s) into web/public/data`)
 }
-
-console.log(`[sync-data] copied ${copied} file(s) into web/public/data`)

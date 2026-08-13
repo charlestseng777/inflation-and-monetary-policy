@@ -1,3 +1,7 @@
-# Only needed for the Claude commentary step.
-# The ONS/BoE fetch and all derivations use the standard library.
+# Scheduled fetcher.
+#
+# The ONS/BoE fetch and every derivation use the standard library. psycopg is
+# needed only when writing to Postgres, anthropic only for the commentary step;
+# the script degrades gracefully if either is missing.
+psycopg[binary]>=3.2,<4.0
 anthropic>=0.60

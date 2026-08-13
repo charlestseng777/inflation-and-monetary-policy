@@ -1,0 +1,92 @@
+# Render Blueprint — the whole stack in one file.
+#
+# Four pieces:
+#   uk-inflation-db      Postgres, the single source of truth
+#   uk-inflation-api     FastAPI service that reads the database
+#   uk-inflation-fetcher Scheduled job that scrapes ONS + BoE and writes to it
+#   uk-inflation-web     The React dashboard, served as static files
+#
+# Create these by pointing Render at this repo (New → Blueprint). Two values
+# are deliberately not stored here and must be set in the dashboard — see
+# DEPLOYMENT.md: ANTHROPIC_API_KEY and the two URLs the services use to find
+# each other.
+
+databases:
+  - name: uk-inflation-db
+    databaseName: inflation
+    user: inflation
+    plan: free          # check current Render plans; free databases expire
+
+services:
+  # ---------------------------------------------------------------- API ----
+  - type: web
+    name: uk-inflation-api
+    runtime: python
+    plan: free
+    rootDir: .
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: uk-inflation-db
+          property: connectionString
+      # Lock this to the dashboard's own URL once you know it. Defaults to "*".
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+  # ------------------------------------------------- scheduled scraping ----
+  # Runs at 07:30, 12:30 and 15:30 UTC on weekdays. Those are set against UK
+  # winter time so each one lands after the 07:00 ONS release and the 12:00
+  # MPC announcement in both winter and summer.
+  #
+  # Cron jobs are a paid Render feature. If you would rather not pay for one,
+  # DEPLOYMENT.md explains how to keep using the free GitHub Actions schedule
+  # against this same database instead — the fetcher code is identical.
+  - type: cron
+    name: uk-inflation-fetcher
+    runtime: python
+    plan: starter
+    schedule: "30 7,12,15 * * 1-5"
+    rootDir: .
+    buildCommand: pip install -r fetcher/requirements.txt
+    command: python fetcher/fetch.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: uk-inflation-db
+          property: connectionString
+      # Without this the job still runs; it just writes no commentary.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-opus-5
+
+  # ----------------------------------------------------------- frontend ----
+  - type: web
+    name: uk-inflation-web
+    runtime: static
+    rootDir: web
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      # Set to the API service's URL, e.g. https://uk-inflation-api.onrender.com
+      - key: VITE_API_BASE_URL
+        sync: false
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+    routes:
+      # Single-page app: anything not matching a file falls back to index.html.
+      - type: rewrite
+        source: /*
+        destination: /index.html

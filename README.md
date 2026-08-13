@@ -21,19 +21,24 @@ hand-entered.
                      │
                      ├─→ Claude API  ← plain-English note on what changed
                      ▼
-              data/*.json            ← committed back to the repo
-                     │
+              PostgreSQL             ← single source of truth
                      ▼
-              web/ (Vite + React)    ← rebuilt & redeployed on push
+           backend/ (FastAPI)        ← read-only JSON API
+                     ▼
+              web/ (Vite + React)    ← the dashboard
 ```
 
 | Piece | Where | What it does |
 |---|---|---|
-| **Fetcher** | `fetcher/fetch.py` | Pulls 20 ONS series + the BoE daily Bank Rate, derives the CPI decomposition, diffs against the last run, asks Claude for a note when something moved. Standard library only, apart from the Claude call. |
-| **Scheduler** | `.github/workflows/update-data.yml` | Two weekday cron runs (06:30 and 12:30 UTC) covering the ONS 07:00 release slot and the noon MPC announcement, plus manual dispatch. Commits `data/` back to the repo. |
-| **Storage** | `data/*.json` | Flat JSON committed to the repo. Simple, diffable, works with any static host, and every change is visible in git history. |
-| **Frontend** | `web/` | Vite + React + Tailwind + Recharts. Reads the JSON at runtime; a push from the fetcher triggers a rebuild on Vercel/Netlify. |
+| **Fetcher** | `fetcher/fetch.py` | Pulls 20 ONS series + the BoE daily Bank Rate, derives the CPI decomposition, diffs against the last run, asks Claude for a note when something moved. Writes to Postgres when `DATABASE_URL` is set, flat JSON otherwise. |
+| **Scheduler** | Render Cron, or `.github/workflows/update-data.yml` | Three weekday runs (07:30, 12:30, 15:30 UTC) covering the 07:00 ONS release and the noon MPC announcement in both winter and summer, plus manual triggering. |
+| **Storage** | PostgreSQL (`backend/schema.sql`) | Observations, rate decisions, events, commentary, meta, and an audit log of every scrape. Falls back to flat JSON in `data/` for local work. |
+| **API** | `backend/app.py` | FastAPI. Serves the same three payloads the frontend always consumed, at the same paths, with a short in-process cache. |
+| **Frontend** | `web/` | Vite + React + Tailwind + Recharts. Reads from the API when `VITE_API_BASE_URL` is set, from static files otherwise. Unchanged by the move to a database. |
 | **AI layer** | inside the fetcher | Writes a short institutional-style note per release and flags when the policy stance looks out of step with the core trend. |
+
+**Deploying:** see [DEPLOYMENT.md](DEPLOYMENT.md) for a step-by-step Render walkthrough
+written for a non-technical reader. `render.yaml` defines all four services.
 
 ---
 

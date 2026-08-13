@@ -34,6 +34,11 @@ ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = ROOT / "config"
 DATA_DIR = ROOT / "data"
 
+# Run as `python fetcher/fetch.py`, sys.path[0] is fetcher/ — put the repo root
+# on the path so the shared database layer in backend/ is importable.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 USER_AGENT = "uk-inflation-dashboard/1.0 (+https://github.com/)"
 TIMEOUT = 60
 
@@ -600,6 +605,83 @@ def generate_commentary(prompt: str) -> dict | None:
 
 
 # --------------------------------------------------------------------------
+# storage
+# --------------------------------------------------------------------------
+
+def resolve_target(requested: str) -> str:
+    """
+    Decide where this run writes.
+
+    'auto' keeps both deployment shapes working from one entry point: Postgres
+    when DATABASE_URL is present (the Render cron job), flat JSON files when it
+    is not (local runs and the GitHub Actions workflow).
+    """
+    if requested != "auto":
+        return requested
+    try:
+        from backend import database
+    except ImportError:
+        return "json"
+    return "db" if database.is_configured() else "json"
+
+
+def load_previous_panel(target: str) -> list[dict]:
+    """Whatever the last run stored, for diffing against."""
+    if target in ("db", "both"):
+        try:
+            from backend import database
+            with database.connect() as conn:
+                database.init_schema()
+                return database.load_observations(conn)
+        except Exception as error:  # noqa: BLE001 - a first run has no store yet
+            log(f"could not read the previous panel from Postgres ({error}); "
+                f"treating this as a first run")
+            return []
+    return (load_json(DATA_DIR / "timeseries.json", {}) or {}).get("observations", [])
+
+
+def write_to_database(panel: list[dict], meta_payload: dict, events: list[dict],
+                      rate_changes: list[dict], diff: dict) -> None:
+    from backend import database
+
+    database.init_schema()
+    with database.connect() as conn:
+        database.upsert_observations(conn, panel)
+        database.replace_rate_changes(conn, rate_changes)
+        database.replace_events(conn, events)
+        for key in database.META_KEYS:
+            if key in meta_payload:
+                database.set_meta(conn, key, meta_payload[key])
+        database.record_run(
+            conn,
+            status="ok",
+            months_added=len(diff["added_months"]),
+            values_revised=len(diff["revised_values"]),
+            latest_month=panel[-1]["date"],
+        )
+        conn.commit()
+    log(f"Postgres updated: {len(panel)} observations, "
+        f"{len(rate_changes)} rate changes, {len(events)} events")
+
+
+def write_commentary(target: str, entry: dict | None, now: str) -> None:
+    """Append a note to whichever store is active, keeping the file valid either way."""
+    if target in ("db", "both") and entry is not None:
+        from backend import database
+        with database.connect() as conn:
+            database.append_commentary(conn, entry)
+            conn.commit()
+
+    if target in ("json", "both"):
+        commentary_log = load_json(DATA_DIR / "commentary.json", {"entries": []})
+        commentary_log.setdefault("entries", [])
+        if entry is not None:
+            commentary_log["entries"] = ([entry] + commentary_log["entries"])[:60]
+        commentary_log["generated_at"] = now
+        write_json(DATA_DIR / "commentary.json", commentary_log)
+
+
+# --------------------------------------------------------------------------
 # main
 # --------------------------------------------------------------------------
 
@@ -609,7 +691,13 @@ def main() -> int:
                         help="skip the Claude commentary step")
     parser.add_argument("--force", action="store_true",
                         help="write output and generate commentary even if nothing changed")
+    parser.add_argument("--target", choices=("auto", "db", "json", "both"), default="auto",
+                        help="where to write: Postgres, flat JSON files, or both. "
+                             "'auto' (the default) picks Postgres when DATABASE_URL is set.")
     args = parser.parse_args()
+
+    target = resolve_target(args.target)
+    log(f"storage target: {target}")
 
     config = load_json(CONFIG_DIR / "series.json")
     events = load_json(CONFIG_DIR / "events.json", [])
@@ -640,7 +728,7 @@ def main() -> int:
         log("no observations built - aborting without writing")
         return 1
 
-    previous_panel = (load_json(DATA_DIR / "timeseries.json", {}) or {}).get("observations", [])
+    previous_panel = load_previous_panel(target)
     diff = diff_panels(previous_panel, panel)
     alert = flag_reaction_function(panel)
 
@@ -654,14 +742,9 @@ def main() -> int:
     latest = panel[-1]
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
-    write_json(DATA_DIR / "timeseries.json", {
+    meta_payload = {
         "generated_at": now,
         "start": config["start"],
-        "observations": panel,
-    })
-
-    write_json(DATA_DIR / "meta.json", {
-        "generated_at": now,
         "latest_month": latest["date"],
         "latest": {
             "headline_cpi": latest["headline_cpi"],
@@ -715,17 +798,24 @@ def main() -> int:
                 "function reflecting actual MPC decisions."
             ),
         },
-    })
+    }
 
-    # Always keep commentary.json present and valid so the frontend's data
-    # contract holds whether or not the LLM step ran.
-    commentary_log = load_json(DATA_DIR / "commentary.json", {"entries": []})
-    commentary_log.setdefault("entries", [])
+    if target in ("db", "both"):
+        write_to_database(panel, meta_payload, events, rate_changes, diff)
+
+    if target in ("json", "both"):
+        write_json(DATA_DIR / "timeseries.json", {
+            "generated_at": now,
+            "start": config["start"],
+            "observations": panel,
+        })
+        # meta.json carries everything except the panel itself.
+        write_json(DATA_DIR / "meta.json",
+                   {k: v for k, v in meta_payload.items() if k != "start"})
 
     if args.no_llm:
         log("--no-llm passed - skipping commentary")
-        commentary_log["generated_at"] = now
-        write_json(DATA_DIR / "commentary.json", commentary_log)
+        write_commentary(target, None, now)
         return 0
 
     prompt = build_commentary_prompt(panel, diff, alert)
@@ -748,13 +838,10 @@ def main() -> int:
                 "new_months": diff["added_months"],
             },
         }
-        commentary_log["entries"] = ([entry] + commentary_log.get("entries", []))[:60]
-        commentary_log["generated_at"] = now
-        write_json(DATA_DIR / "commentary.json", commentary_log)
+        write_commentary(target, entry, now)
         log(f"commentary written: {entry['headline']}")
     else:
-        commentary_log["generated_at"] = now
-        write_json(DATA_DIR / "commentary.json", commentary_log)
+        write_commentary(target, None, now)
 
     return 0
 
