@@ -44,6 +44,23 @@ written for a non-technical reader. `render.yaml` defines all four services.
 
 ## Quick start
 
+**One click:** double-click **UK Inflation Dashboard** on the desktop. It starts
+the site if it isn't already running, waits until it answers, and opens your
+browser. Nothing to type.
+
+To create that shortcut (on this or another machine):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\install-shortcut.ps1
+```
+
+The launcher (`scripts/start-dashboard.ps1`) also accepts `-Refresh` to scrape
+fresh ONS and Bank of England data before opening, and will simply open a
+deployed site if you put its address in `deployed-url.txt` — so the same
+shortcut keeps working once this is on Render.
+
+Or do it by hand:
+
 ```bash
 # 1. Fetch the data (no API key needed for this part)
 python fetcher/fetch.py --no-llm
