@@ -1,66 +1,36 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-const FILES = {
-  timeseries: 'data/timeseries.json',
-  meta: 'data/meta.json',
-  commentary: 'data/commentary.json',
-}
-
-// In production the data comes from the API service; with no API configured we
-// fall back to the static files under public/, which is how local development
-// and the flat-file deployment worked. Nothing else in the app changes.
-const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/+$/, '')
-
-function endpoint(path) {
-  return API_BASE ? `${API_BASE}/${path}` : `${import.meta.env.BASE_URL}${path}`
-}
-
-async function loadJson(path, { optional = false } = {}) {
-  const response = await fetch(endpoint(path))
-  if (!response.ok) {
-    if (optional) return null
-    throw new Error(`Could not load ${path} (${response.status})`)
+// This build runs as a self-contained Cowork Artifact rather than against the
+// API/static-file setup the rest of this comment used to describe: there is
+// no server to fetch from, so the data this dashboard reads is embedded
+// directly on the page as `window.__DASHBOARD_DATA__` (see the script block
+// the Cowork job writes ahead of this bundle). A daily refresh replaces that
+// block and republishes the page; this bundle itself doesn't change.
+function readEmbeddedBundle() {
+  if (typeof window === 'undefined' || !window.__DASHBOARD_DATA__) {
+    return { status: 'error', error: 'Embedded dashboard data was not found on the page.' }
   }
-  return response.json()
+  const { timeseries, meta, commentary } = window.__DASHBOARD_DATA__
+  const observations = timeseries?.observations ?? []
+  if (!observations.length) {
+    return { status: 'error', error: 'The embedded timeseries data contained no observations.' }
+  }
+  return {
+    status: 'ready',
+    observations,
+    meta: meta ?? {},
+    events: meta?.events ?? [],
+    mpcDecisions: meta?.mpc_decisions ?? [],
+    mpcSummaries: meta?.mpc_summaries ?? {},
+    mpcNews: meta?.mpc_news ?? {},
+    upcomingReleases: meta?.upcoming_releases ?? [],
+    syntheticCurve: meta?.synthetic_mpc_curve ?? null,
+    commentary: commentary?.entries ?? [],
+    generatedAt: timeseries?.generated_at ?? meta?.generated_at ?? null,
+  }
 }
 
 export function useData() {
-  const [state, setState] = useState({ status: 'loading' })
-
-  useEffect(() => {
-    let cancelled = false
-
-    Promise.all([
-      loadJson(FILES.timeseries),
-      loadJson(FILES.meta),
-      loadJson(FILES.commentary, { optional: true }),
-    ])
-      .then(([timeseries, meta, commentary]) => {
-        if (cancelled) return
-        const observations = timeseries?.observations ?? []
-        if (!observations.length) {
-          throw new Error('timeseries.json contained no observations')
-        }
-        setState({
-          status: 'ready',
-          observations,
-          meta: meta ?? {},
-          events: meta?.events ?? [],
-          mpcDecisions: meta?.mpc_decisions ?? [],
-          mpcSummaries: meta?.mpc_summaries ?? {},
-          mpcNews: meta?.mpc_news ?? {},
-          upcomingReleases: meta?.upcoming_releases ?? [],
-          syntheticCurve: meta?.synthetic_mpc_curve ?? null,
-          commentary: commentary?.entries ?? [],
-          generatedAt: timeseries?.generated_at ?? meta?.generated_at ?? null,
-        })
-      })
-      .catch((error) => {
-        if (!cancelled) setState({ status: 'error', error: error.message })
-      })
-
-    return () => { cancelled = true }
-  }, [])
-
+  const [state] = useState(readEmbeddedBundle)
   return state
 }
