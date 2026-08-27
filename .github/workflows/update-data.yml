@@ -1,5 +1,5 @@
 name: Update data
-
+ 
 on:
   schedule:
     # Cron is UTC; UK time is UTC in winter and UTC+1 in summer. Each slot below
@@ -18,45 +18,75 @@ on:
         description: 'Write output and regenerate commentary even if nothing changed'
         type: boolean
         default: false
-
+ 
 concurrency:
   group: update-data
   cancel-in-progress: false
-
+ 
 permissions:
   contents: write
-
+ 
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
-
+ 
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
+ 
       - name: Install dependencies
         run: pip install -r fetcher/requirements.txt
-
-      - name: Fetch ONS + BoE data and write commentary
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+ 
+      - name: Fetch ONS + BoE data
+        # No Anthropic key here for now — commentary is skipped to keep this
+        # to a single secret-free workflow. Re-add ANTHROPIC_API_KEY as a repo
+        # secret and drop --no-llm later if you want the written note back.
         run: |
-          python fetcher/fetch.py ${{ inputs.force && '--force' || '' }}
-
+          python fetcher/fetch.py --no-llm ${{ inputs.force && '--force' || '' }}
+ 
       - name: Commit updated data
+        id: commit
         run: |
           if [ -z "$(git status --porcelain data)" ]; then
             echo "No data changes — nothing to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-
+ 
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
-
+ 
           LATEST=$(python -c "import json;print(json.load(open('data/meta.json'))['latest_month'])")
           git commit -m "data: refresh through ${LATEST}"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+ 
+  deploy:
+    needs: fetch
+    if: needs.fetch.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main   # pick up the commit the fetch job just pushed
+ 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+ 
+      - name: Build the dashboard
+        run: |
+          npm --prefix web ci
+          npm --prefix web run build
+ 
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./web/dist
+ 
