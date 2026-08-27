@@ -59,7 +59,7 @@ function ComponentTooltip({ active, payload, label, mode }) {
   )
 }
 
-export default function StackedChart({ data }) {
+export default function StackedChart({ data, onSelectMonth }) {
   const [mode, setMode] = useState('contribution')
   const active = MODES.find((entry) => entry.id === mode)
 
@@ -87,7 +87,9 @@ export default function StackedChart({ data }) {
       <header className="flex flex-wrap items-start justify-between gap-3 border-b border-hairline px-4 py-3.5 sm:px-5">
         <div className="max-w-xl">
           <h2 className="text-sm font-semibold text-ink">Where the inflation came from</h2>
-          <p className="mt-0.5 text-xs leading-relaxed text-muted">{active.blurb}</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-muted">
+            {active.blurb} Click a point to see that month's full breakdown.
+          </p>
         </div>
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Decomposition mode">
           {MODES.map((entry) => (
@@ -106,7 +108,12 @@ export default function StackedChart({ data }) {
 
       <div className="h-[300px] px-1 py-4 sm:h-[340px] sm:px-2">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartData} syncId="uk-macro" margin={{ top: 8, right: 24, bottom: 4, left: 4 }}>
+          <ComposedChart
+            data={chartData}
+            syncId="uk-macro"
+            margin={{ top: 8, right: 24, bottom: 4, left: 4 }}
+            onClick={(state) => state?.activeLabel && onSelectMonth?.(state.activeLabel)}
+          >
             <CartesianGrid stroke={CHROME.grid} vertical={false} />
             <XAxis
               dataKey="date"

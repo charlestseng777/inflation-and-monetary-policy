@@ -6,6 +6,7 @@ import {
 import { CHROME, MAIN_SERIES } from '../lib/series.js'
 import { axisTick, monthLong, pct } from '../lib/format.js'
 import ChartTooltip from './ChartTooltip.jsx'
+import RangeSlider from './RangeSlider.jsx'
 
 const SYNC_ID = 'uk-macro'
 
@@ -39,7 +40,8 @@ function endLabel(color, text, lastIndex) {
 }
 
 export default function MainChart({
-  data, events, enabled, onToggle, onHoverMonth, onSelectMonth, selectedMonth,
+  data, events, enabled, onToggle, onSelectMonth, selectedMonth,
+  observations, range, onRangeChange,
 }) {
   const [hoveredEvent, setHoveredEvent] = useState(null)
 
@@ -76,8 +78,8 @@ export default function MainChart({
         <div>
           <h2 className="text-sm font-semibold text-ink">Inflation and the policy response</h2>
           <p className="mt-0.5 text-xs text-muted">
-            Annual CPI inflation against Bank Rate, percent. Click any point on the
-            headline line to decompose that month.
+            Annual CPI inflation against Bank Rate, percent. Click any point to focus
+            the insight panel on that month.
           </p>
         </div>
 
@@ -107,14 +109,14 @@ export default function MainChart({
         </div>
       </header>
 
+      <RangeSlider observations={observations} range={range} onChange={onRangeChange} />
+
       <div className="h-[380px] px-1 py-4 sm:h-[440px] sm:px-2">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={data}
             syncId={SYNC_ID}
             margin={{ top: 14, right: showEndLabels ? 78 : 24, bottom: 4, left: 4 }}
-            onMouseMove={(state) => onHoverMonth?.(state?.activeLabel ?? null)}
-            onMouseLeave={() => onHoverMonth?.(null)}
             onClick={(state) => state?.activeLabel && onSelectMonth?.(state.activeLabel)}
           >
             <CartesianGrid stroke={CHROME.grid} strokeDasharray="0" vertical={false} />

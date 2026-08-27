@@ -17,6 +17,13 @@ export function monthLong(key) {
   return `${MONTH_LONG[monthIndex(key)]} ${key.slice(0, 4)}`
 }
 
+/** Full date from an ISO 'YYYY-MM-DD' string, e.g. '2025-08-06' -> '6 August 2025'. */
+export function dayLong(iso) {
+  if (!iso) return ''
+  const day = parseInt(iso.slice(8, 10), 10)
+  return `${day} ${MONTH_LONG[monthIndex(iso)]} ${iso.slice(0, 4)}`
+}
+
 /** Axis ticks: show the year on January, the month otherwise. */
 export function axisTick(key) {
   if (!key) return ''

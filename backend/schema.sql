@@ -18,6 +18,10 @@ CREATE TABLE IF NOT EXISTS observations (
     wage_growth          NUMERIC,
     policy_rate          NUMERIC,
     real_rate            NUMERIC,
+    expected_rate        NUMERIC,
+    expected_gap         NUMERIC,
+    ois_m1               NUMERIC,
+    ois_m2               NUMERIC,
     contributions        JSONB NOT NULL DEFAULT '{}'::jsonb,
     weights              JSONB NOT NULL DEFAULT '{}'::jsonb,
     index_levels         JSONB NOT NULL DEFAULT '{}'::jsonb,
@@ -26,6 +30,17 @@ CREATE TABLE IF NOT EXISTS observations (
 );
 
 CREATE INDEX IF NOT EXISTS observations_month_idx ON observations (month);
+
+-- Columns added after the first deploy. `CREATE TABLE IF NOT EXISTS` above is a
+-- no-op against an existing database, so new columns have to be added here.
+ALTER TABLE observations ADD COLUMN IF NOT EXISTS expected_rate NUMERIC;
+ALTER TABLE observations ADD COLUMN IF NOT EXISTS expected_gap  NUMERIC;
+ALTER TABLE observations ADD COLUMN IF NOT EXISTS ois_m1        NUMERIC;
+ALTER TABLE observations ADD COLUMN IF NOT EXISTS ois_m2        NUMERIC;
+ALTER TABLE observations ADD COLUMN IF NOT EXISTS pricing_bp    NUMERIC;
+ALTER TABLE observations ADD COLUMN IF NOT EXISTS ois_3m        NUMERIC;
+ALTER TABLE observations ADD COLUMN IF NOT EXISTS ois_2y        NUMERIC;
+ALTER TABLE observations ADD COLUMN IF NOT EXISTS gdp_growth    NUMERIC;
 
 -- Every Bank Rate decision, with the exact date it took effect.
 CREATE TABLE IF NOT EXISTS rate_changes (

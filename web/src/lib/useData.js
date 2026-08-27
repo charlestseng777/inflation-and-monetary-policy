@@ -46,6 +46,11 @@ export function useData() {
           observations,
           meta: meta ?? {},
           events: meta?.events ?? [],
+          mpcDecisions: meta?.mpc_decisions ?? [],
+          mpcSummaries: meta?.mpc_summaries ?? {},
+          mpcNews: meta?.mpc_news ?? {},
+          upcomingReleases: meta?.upcoming_releases ?? [],
+          syntheticCurve: meta?.synthetic_mpc_curve ?? null,
           commentary: commentary?.entries ?? [],
           generatedAt: timeseries?.generated_at ?? meta?.generated_at ?? null,
         })

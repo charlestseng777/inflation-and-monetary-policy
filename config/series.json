@@ -4,14 +4,37 @@
     "base": "https://www.ons.gov.uk",
     "datasets": {
       "mm23": "/economy/inflationandpriceindices/timeseries/{cdid}/mm23/data",
-      "lms": "/employmentandlabourmarket/peopleinwork/earningsandworkinghours/timeseries/{cdid}/lms/data"
+      "lms": "/employmentandlabourmarket/peopleinwork/earningsandworkinghours/timeseries/{cdid}/lms/data",
+      "mgdp": "/economy/grossdomesticproductgdp/timeseries/{cdid}/mgdp/data"
     }
   },
   "boe": {
     "url": "https://www.bankofengland.co.uk/boeapps/iadb/fromshowcolumns.asp",
     "series": "IUDBEDR",
-    "label": "Official Bank Rate (daily)"
+    "label": "Official Bank Rate (daily)",
+    "sonia": "IUDSOIA",
+    "sonia_label": "SONIA, sterling overnight index average (daily)"
   },
+
+  "market": {
+    "mpc_votes": {
+      "url": "https://www.bankofengland.co.uk/-/media/boe/files/monetary-policy-summary-and-minutes/mpcvoting.xlsx",
+      "sheet": "Bank Rate Decisions",
+      "title": "MPC voting history, Bank Rate"
+    },
+    "upcoming_dates_url": "https://www.bankofengland.co.uk/monetary-policy/upcoming-mpc-dates",
+    "mps_url_base": "https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes",
+    "news_search_url": "https://news.google.com/rss/search",
+    "ois": {
+      "archive": "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/oisddata.zip",
+      "latest": "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip",
+      "title": "UK OIS spot curve, short end (daily)"
+    },
+    "override_csv": "data/ois_meetings.csv",
+    "spread_note": "SONIA-to-Bank-Rate spread used to convert the synthetic curve's SONIA-space forward into a Bank Rate expectation. Estimated day-by-day with Holt's linear trend smoothing (fetcher/market.py: holt_spread_series, HOLT_ALPHA/HOLT_BETA), not a fixed constant and not the raw daily gap — see docs/synthetic-mpc-ois-methodology.md.",
+    "synthetic_curve_meetings": 3
+  },
+
   "rates": {
     "headline_cpi":   { "cdid": "D7G7", "dataset": "mm23", "kind": "rate",  "title": "CPI annual rate, all items" },
     "services_cpi":   { "cdid": "D7NN", "dataset": "mm23", "kind": "rate",  "title": "CPI annual rate, services" },
@@ -23,7 +46,9 @@
     "core_goods_cpi": { "cdid": "DK9J", "dataset": "mm23", "kind": "yoy_from_index", "title": "CPI non-energy industrial goods" },
     "energy_cpi":     { "cdid": "DK9T", "dataset": "mm23", "kind": "yoy_from_index", "title": "CPI energy" },
 
-    "wage_growth":    { "cdid": "KAI9", "dataset": "lms",  "kind": "rate",  "title": "AWE regular pay, 3m YoY growth, whole economy, SA" }
+    "wage_growth":    { "cdid": "KAI9", "dataset": "lms",  "kind": "rate",  "title": "AWE regular pay, 3m YoY growth, whole economy, SA" },
+
+    "gdp_growth":     { "cdid": "ECY2", "dataset": "mgdp", "kind": "yoy_from_index", "title": "Monthly GDP (GVA), chained volume, SA — annual growth" }
   },
   "indices": {
     "headline_index":        { "cdid": "D7BT", "dataset": "mm23", "title": "CPI index, all items (2015=100)" },

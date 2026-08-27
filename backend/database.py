@@ -23,14 +23,17 @@ SCHEMA_PATH = Path(__file__).resolve().parent / "schema.sql"
 
 OBSERVATION_COLUMNS = (
     "headline_cpi", "core_cpi", "services_cpi", "goods_cpi", "core_goods_cpi",
-    "food_cpi", "energy_cpi", "alcohol_tobacco_cpi", "wage_growth",
-    "policy_rate", "real_rate",
+    "food_cpi", "energy_cpi", "alcohol_tobacco_cpi", "wage_growth", "gdp_growth",
+    "policy_rate", "real_rate", "expected_rate", "expected_gap",
+    "ois_m1", "ois_m2", "pricing_bp", "ois_3m", "ois_2y",
 )
 
 # meta.json keys that live in the key/value table.
 META_KEYS = (
     "generated_at", "start", "latest_month", "latest", "mom",
     "reaction_function_flag", "diff", "sources", "methodology",
+    "mpc_decisions", "mpc_summaries", "mpc_news", "upcoming_releases",
+    "synthetic_mpc_curve",
 )
 
 
@@ -307,6 +310,11 @@ def build_meta_payload(conn) -> dict:
         "latest": meta.get("latest") or {},
         "mom": meta.get("mom") or {},
         "rate_changes": load_rate_changes(conn),
+        "mpc_decisions": meta.get("mpc_decisions") or [],
+        "mpc_summaries": meta.get("mpc_summaries") or {},
+        "mpc_news": meta.get("mpc_news") or {},
+        "upcoming_releases": meta.get("upcoming_releases") or [],
+        "synthetic_mpc_curve": meta.get("synthetic_mpc_curve") or {},
         "events": load_events(conn),
         "reaction_function_flag": meta.get("reaction_function_flag"),
         "diff": meta.get("diff") or {},
@@ -353,7 +361,8 @@ def seed_from_files(conn, data_dir: Path, config_dir: Path) -> bool:
     set_meta(conn, "generated_at", timeseries.get("generated_at"))
     set_meta(conn, "start", timeseries.get("start"))
     for key in ("latest_month", "latest", "mom", "reaction_function_flag",
-                "diff", "sources", "methodology"):
+                "diff", "sources", "methodology", "mpc_decisions", "mpc_summaries",
+                "mpc_news", "upcoming_releases", "synthetic_mpc_curve"):
         if key in meta:
             set_meta(conn, key, meta[key])
 

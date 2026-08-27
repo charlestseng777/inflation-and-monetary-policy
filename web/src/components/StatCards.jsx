@@ -29,7 +29,7 @@ export default function StatCards({ row }) {
 
             <div className="mt-2 flex items-baseline gap-2">
               <span className="num text-3xl font-semibold leading-none text-ink">
-                {value === null || value === undefined ? '—' : value.toFixed(1)}
+                {value === null || value === undefined ? '—' : value.toFixed(2)}
               </span>
               <span className="text-base text-faint">%</span>
             </div>

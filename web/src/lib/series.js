@@ -53,13 +53,43 @@ export const STACK_SERIES = [
   { id: 'other', label: 'Other / rounding', color: PALETTE.other, rate: null, index: null },
 ]
 
-// Series shown on the "Inflation vs Rates" tab.
+// Series always shown on the "Inflation vs rates" tab. Rates only,
+// deliberately — the inflation lines belong on the overview tab and are not
+// repeated here. Both colours are the validated blue/orange pair already used
+// together as slots 1-2 elsewhere in the app (see the header note above).
 export const RATES_SERIES = [
-  { id: 'headline_cpi', label: 'Headline CPI', color: PALETTE.headline, width: 2.5 },
-  { id: 'policy_rate', label: 'Bank Rate', color: PALETTE.policy, width: 2, step: true },
-  { id: 'services_cpi', label: 'Services CPI', color: PALETTE.services, width: 1.75 },
-  { id: 'core_cpi', label: 'Core CPI', color: PALETTE.core, width: 1.75 },
+  { id: 'policy_rate', label: 'Bank Rate (decided)', color: PALETTE.policy, width: 2.5, step: true },
+  { id: 'expected_rate', label: 'Synthetic MPC OIS Curve', color: PALETTE.headline, width: 1.75, dashed: true },
 ]
+
+export const SYNTHETIC_CURVE_DESCRIPTION =
+  'Market-implied Bank Rate adjustment for the upcoming MPC meeting, derived ' +
+  'from SONIA OIS forward pricing between consecutive MPC dates.'
+
+// Optional context lines, off by default — toggled on from the legend. Reuse
+// the aqua/violet slots (3 and 7), already validated adjacent to the blue/
+// orange pair above, since nothing else on this page uses them.
+export const RATES_CONTEXT_SERIES = [
+  { id: 'ois_3m', label: '3M SONIA OIS', color: PALETTE.services, width: 1.5 },
+  { id: 'ois_2y', label: '2Y SONIA OIS', color: PALETTE.core, width: 1.5 },
+]
+
+// Tone for an MPC decision, reusing the same semantics as the month-on-month
+// arrows elsewhere (amber = up, blue = down) so the vocabulary stays one thing
+// across the whole app.
+export const MPC_ACTION_TONE = {
+  hike: '#E9B872',
+  cut: '#7FB9E8',
+  hold: CHROME.faint,
+  unknown: CHROME.faint,
+}
+
+// Hawk/dove tone, reusing the same restrictive/accommodative pair the real
+// policy rate bands use (PALETTE.policy orange vs PALETTE.headline blue).
+export const VOTE_TONE = {
+  hawk: PALETTE.policy,
+  dove: PALETTE.headline,
+}
 
 // The CPI hierarchy the drilldown panel renders. `weight` and `contribution`
 // are read from the observation at runtime.

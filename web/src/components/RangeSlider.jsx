@@ -1,5 +1,4 @@
-import { Area, AreaChart, Brush, ResponsiveContainer, YAxis } from 'recharts'
-import { PALETTE } from '../lib/series.js'
+import { Brush, ComposedChart, ResponsiveContainer } from 'recharts'
 import { monthShort } from '../lib/format.js'
 
 const PRESETS = [
@@ -7,19 +6,39 @@ const PRESETS = [
   { id: '5y', label: '5Y', months: 60 },
   { id: '3y', label: '3Y', months: 36 },
   { id: '1y', label: '1Y', months: 12 },
+  { id: 'ytd', label: 'YTD', ytd: true },
   { id: 'all', label: 'All', from: null },
 ]
 
-export default function RangeSelector({ observations, range, onChange }) {
+/**
+ * The date-range brush shared by every chart on a tab. Embedded directly
+ * inside whichever card holds the tab's main chart rather than living in a
+ * box of its own, since a full-width card just for a 64px brush was mostly
+ * empty space. No area/line is plotted behind the brush — it's a scrollbar,
+ * not a chart, and a second rendering of headline CPI here just duplicated
+ * the chart above it.
+ */
+export default function RangeSlider({ observations, range, onChange }) {
   const last = observations.length - 1
+
+  // YTD's start isn't a fixed literal like the other presets — it's January
+  // of whatever year the latest observation falls in.
+  function presetStart(preset) {
+    if (preset.ytd) {
+      const year = observations[last]?.date?.slice(0, 4)
+      return year ? `${year}-01` : null
+    }
+    return preset.from
+  }
 
   function applyPreset(preset) {
     if (preset.months) {
       onChange([Math.max(0, last - preset.months + 1), last])
       return
     }
-    if (preset.from) {
-      const start = observations.findIndex((row) => row.date >= preset.from)
+    const from = presetStart(preset)
+    if (from) {
+      const start = observations.findIndex((row) => row.date >= from)
       onChange([start < 0 ? 0 : start, last])
       return
     }
@@ -29,15 +48,16 @@ export default function RangeSelector({ observations, range, onChange }) {
   function isActive(preset) {
     if (range[1] !== last) return false
     if (preset.months) return range[0] === Math.max(0, last - preset.months + 1)
-    if (preset.from) {
-      const start = observations.findIndex((row) => row.date >= preset.from)
+    const from = presetStart(preset)
+    if (from) {
+      const start = observations.findIndex((row) => row.date >= from)
       return range[0] === (start < 0 ? 0 : start)
     }
     return range[0] === 0
   }
 
   return (
-    <div className="card card-pad">
+    <div className="border-b border-hairline px-4 py-3.5 sm:px-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="label-xs">Date range</div>
@@ -66,24 +86,9 @@ export default function RangeSelector({ observations, range, onChange }) {
         </div>
       </div>
 
-      <div className="mt-3 h-[64px]">
+      <div className="mt-3 h-[26px]">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={observations} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
-            <defs>
-              <linearGradient id="rangeFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={PALETTE.headline} stopOpacity={0.35} />
-                <stop offset="100%" stopColor={PALETTE.headline} stopOpacity={0.02} />
-              </linearGradient>
-            </defs>
-            <YAxis hide domain={['dataMin', 'dataMax']} />
-            <Area
-              type="monotone"
-              dataKey="headline_cpi"
-              stroke={PALETTE.headline}
-              strokeWidth={1.5}
-              fill="url(#rangeFill)"
-              isAnimationActive={false}
-            />
+          <ComposedChart data={observations} margin={{ top: 0, right: 4, bottom: 0, left: 4 }}>
             <Brush
               dataKey="date"
               height={18}
@@ -103,7 +108,7 @@ export default function RangeSelector({ observations, range, onChange }) {
                 }
               }}
             />
-          </AreaChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
 
