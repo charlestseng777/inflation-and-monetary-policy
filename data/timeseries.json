@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T12:43:04+00:00",
+  "generated_at": "2026-09-03T15:40:11+00:00",
   "start": "2015-01",
   "observations": [
     {
@@ -8633,12 +8633,12 @@
       "wage_growth": null,
       "gdp_growth": null,
       "policy_rate": 3.75,
-      "expected_rate": null,
-      "ois_m1": null,
-      "ois_m2": null,
-      "pricing_bp": null,
-      "ois_3m": null,
-      "ois_2y": null,
+      "expected_rate": 3.8,
+      "ois_m1": 3.73,
+      "ois_m2": 3.77,
+      "pricing_bp": 4.9,
+      "ois_3m": 3.79,
+      "ois_2y": 4.27,
       "contributions": {
         "services": null,
         "core_goods": null,
@@ -8675,12 +8675,12 @@
         "wage_growth": null,
         "gdp_growth": null,
         "policy_rate": 0.0,
-        "expected_rate": null,
-        "ois_3m": null,
-        "ois_2y": null
+        "expected_rate": -0.04,
+        "ois_3m": 0.02,
+        "ois_2y": 0.04
       },
       "real_rate": null,
-      "expected_gap": null
+      "expected_gap": 0.05
     },
     {
       "date": "2026-09",
@@ -8737,9 +8737,9 @@
         "wage_growth": null,
         "gdp_growth": null,
         "policy_rate": 0.0,
-        "expected_rate": null,
-        "ois_3m": null,
-        "ois_2y": null
+        "expected_rate": 0.0,
+        "ois_3m": 0.02,
+        "ois_2y": 0.11
       },
       "real_rate": null,
       "expected_gap": 0.05
